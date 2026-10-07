@@ -4,7 +4,7 @@ Ask questions about investment-portfolio data in plain English. Every answer can
 
 This is a **reference implementation designed for production constraints** (least-privilege database access, deterministic validation, an append-only audit trail, measured accuracy). It is not a deployed product and has no production usage history. All data is synthetic.
 
-> **Demo:** `docs/demo.gif` *(to be recorded)*
+![Demo: an answered question with its SQL and grounding check, a clarifying question, a refused PII request, and the audit log](docs/demo.gif)
 
 ---
 
