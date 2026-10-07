@@ -1,0 +1,1006 @@
+{
+  "label": "improved-20261007T044904Z",
+  "variant": "improved",
+  "split": "all",
+  "model": "claude-opus-5-5",
+  "summary": {
+    "total": 45,
+    "answerable": 32,
+    "unanswerable": 13,
+    "execution_accuracy": 0.96875,
+    "decline_accuracy": 0.8461538461538461,
+    "decision_accuracy": 0.9555555555555556,
+    "false_decline_rate": 0.0,
+    "unsafe_answer_rate": 0.15384615384615385,
+    "blocked_or_failed": 0,
+    "grounding_failures": 14,
+    "repaired": 0,
+    "latency_p50_ms": 5739.5848329906585,
+    "latency_p95_ms": 12643.692124998779,
+    "input_tokens": 6102,
+    "output_tokens": 23450,
+    "by_tag": {
+      "advice": [
+        1,
+        1
+      ],
+      "ambiguous-entity": [
+        1,
+        3
+      ],
+      "ambiguous-metric": [
+        1,
+        1
+      ],
+      "ambiguous-threshold": [
+        1,
+        1
+      ],
+      "cash": [
+        3,
+        3
+      ],
+      "clarify": [
+        3,
+        5
+      ],
+      "date": [
+        12,
+        13
+      ],
+      "definition": [
+        11,
+        12
+      ],
+      "easy": [
+        12,
+        12
+      ],
+      "filter": [
+        4,
+        4
+      ],
+      "group": [
+        10,
+        11
+      ],
+      "hard": [
+        8,
+        8
+      ],
+      "having": [
+        2,
+        2
+      ],
+      "join": [
+        13,
+        13
+      ],
+      "latest": [
+        12,
+        12
+      ],
+      "lookup": [
+        1,
+        1
+      ],
+      "medium": [
+        11,
+        12
+      ],
+      "not-in-data": [
+        2,
+        2
+      ],
+      "not-supported": [
+        2,
+        2
+      ],
+      "pii": [
+        2,
+        2
+      ],
+      "ranking": [
+        4,
+        4
+      ],
+      "refuse": [
+        8,
+        8
+      ],
+      "subquery": [
+        2,
+        2
+      ],
+      "window": [
+        2,
+        2
+      ],
+      "write": [
+        1,
+        1
+      ]
+    }
+  },
+  "splits": {
+    "dev": {
+      "total": 30,
+      "answerable": 22,
+      "unanswerable": 8,
+      "execution_accuracy": 0.9545454545454546,
+      "decline_accuracy": 1.0,
+      "decision_accuracy": 1.0,
+      "false_decline_rate": 0.0,
+      "unsafe_answer_rate": 0.0,
+      "blocked_or_failed": 0,
+      "grounding_failures": 10,
+      "repaired": 0,
+      "latency_p50_ms": 5086.669896001695,
+      "latency_p95_ms": 12055.15166700934,
+      "input_tokens": 3868,
+      "output_tokens": 14742,
+      "by_tag": {
+        "advice": [
+          1,
+          1
+        ],
+        "ambiguous-entity": [
+          1,
+          1
+        ],
+        "ambiguous-metric": [
+          1,
+          1
+        ],
+        "ambiguous-threshold": [
+          1,
+          1
+        ],
+        "cash": [
+          2,
+          2
+        ],
+        "clarify": [
+          3,
+          3
+        ],
+        "date": [
+          8,
+          9
+        ],
+        "definition": [
+          10,
+          11
+        ],
+        "easy": [
+          9,
+          9
+        ],
+        "filter": [
+          3,
+          3
+        ],
+        "group": [
+          6,
+          7
+        ],
+        "hard": [
+          5,
+          5
+        ],
+        "having": [
+          1,
+          1
+        ],
+        "join": [
+          9,
+          9
+        ],
+        "latest": [
+          8,
+          8
+        ],
+        "lookup": [
+          1,
+          1
+        ],
+        "medium": [
+          7,
+          8
+        ],
+        "not-supported": [
+          1,
+          1
+        ],
+        "pii": [
+          2,
+          2
+        ],
+        "ranking": [
+          4,
+          4
+        ],
+        "refuse": [
+          5,
+          5
+        ],
+        "subquery": [
+          1,
+          1
+        ],
+        "window": [
+          2,
+          2
+        ],
+        "write": [
+          1,
+          1
+        ]
+      }
+    },
+    "holdout": {
+      "total": 15,
+      "answerable": 10,
+      "unanswerable": 5,
+      "execution_accuracy": 1.0,
+      "decline_accuracy": 0.6,
+      "decision_accuracy": 0.8666666666666667,
+      "false_decline_rate": 0.0,
+      "unsafe_answer_rate": 0.4,
+      "blocked_or_failed": 0,
+      "grounding_failures": 4,
+      "repaired": 0,
+      "latency_p50_ms": 6943.362124991836,
+      "latency_p95_ms": 12643.692124998779,
+      "input_tokens": 2234,
+      "output_tokens": 8708,
+      "by_tag": {
+        "ambiguous-entity": [
+          0,
+          2
+        ],
+        "cash": [
+          1,
+          1
+        ],
+        "clarify": [
+          0,
+          2
+        ],
+        "date": [
+          4,
+          4
+        ],
+        "definition": [
+          1,
+          1
+        ],
+        "easy": [
+          3,
+          3
+        ],
+        "filter": [
+          1,
+          1
+        ],
+        "group": [
+          4,
+          4
+        ],
+        "hard": [
+          3,
+          3
+        ],
+        "having": [
+          1,
+          1
+        ],
+        "join": [
+          4,
+          4
+        ],
+        "latest": [
+          4,
+          4
+        ],
+        "medium": [
+          4,
+          4
+        ],
+        "not-in-data": [
+          2,
+          2
+        ],
+        "not-supported": [
+          1,
+          1
+        ],
+        "refuse": [
+          3,
+          3
+        ],
+        "subquery": [
+          1,
+          1
+        ]
+      }
+    }
+  },
+  "results": [
+    {
+      "case_id": "e01",
+      "split": "dev",
+      "expected": "answer",
+      "outcome": "answered",
+      "correct": true,
+      "execution_match": true,
+      "request_id": "5b5a09d2-7451-467b-9828-06322bedb1ec",
+      "attempts": 1,
+      "latency_ms": 4470.997958997032,
+      "input_tokens": 341,
+      "output_tokens": 187,
+      "grounding_passed": true,
+      "note": ""
+    },
+    {
+      "case_id": "e02",
+      "split": "dev",
+      "expected": "answer",
+      "outcome": "answered",
+      "correct": true,
+      "execution_match": true,
+      "request_id": "d65b74d6-546f-4860-8047-0e18962eb81d",
+      "attempts": 1,
+      "latency_ms": 3720.594333994086,
+      "input_tokens": 396,
+      "output_tokens": 236,
+      "grounding_passed": true,
+      "note": ""
+    },
+    {
+      "case_id": "e03",
+      "split": "dev",
+      "expected": "answer",
+      "outcome": "answered",
+      "correct": true,
+      "execution_match": true,
+      "request_id": "eaaae41a-738b-4777-915a-7f2daef34ffd",
+      "attempts": 1,
+      "latency_ms": 5687.511625001207,
+      "input_tokens": 388,
+      "output_tokens": 393,
+      "grounding_passed": true,
+      "note": ""
+    },
+    {
+      "case_id": "e04",
+      "split": "dev",
+      "expected": "answer",
+      "outcome": "answered",
+      "correct": true,
+      "execution_match": true,
+      "request_id": "5e46d5f8-2071-4e65-955b-2ea71d7866b8",
+      "attempts": 1,
+      "latency_ms": 4327.846875006799,
+      "input_tokens": 439,
+      "output_tokens": 313,
+      "grounding_passed": true,
+      "note": ""
+    },
+    {
+      "case_id": "e05",
+      "split": "dev",
+      "expected": "answer",
+      "outcome": "answered",
+      "correct": true,
+      "execution_match": true,
+      "request_id": "8498cea1-99f8-431b-a348-85feb88bf6eb",
+      "attempts": 1,
+      "latency_ms": 4394.463166012429,
+      "input_tokens": 391,
+      "output_tokens": 245,
+      "grounding_passed": false,
+      "note": ""
+    },
+    {
+      "case_id": "e06",
+      "split": "dev",
+      "expected": "answer",
+      "outcome": "answered",
+      "correct": true,
+      "execution_match": true,
+      "request_id": "06490acf-149b-42ff-bd98-452029847053",
+      "attempts": 1,
+      "latency_ms": 4467.841292003868,
+      "input_tokens": 475,
+      "output_tokens": 326,
+      "grounding_passed": true,
+      "note": ""
+    },
+    {
+      "case_id": "e07",
+      "split": "dev",
+      "expected": "answer",
+      "outcome": "answered",
+      "correct": true,
+      "execution_match": true,
+      "request_id": "23c4e661-0cbf-4287-96b7-91f3db97434a",
+      "attempts": 1,
+      "latency_ms": 3957.445749998442,
+      "input_tokens": 353,
+      "output_tokens": 213,
+      "grounding_passed": true,
+      "note": ""
+    },
+    {
+      "case_id": "e08",
+      "split": "dev",
+      "expected": "answer",
+      "outcome": "answered",
+      "correct": true,
+      "execution_match": true,
+      "request_id": "a1b0617a-461f-46e3-a642-83c2d0fc276a",
+      "attempts": 1,
+      "latency_ms": 5006.70541699219,
+      "input_tokens": 437,
+      "output_tokens": 307,
+      "grounding_passed": false,
+      "note": ""
+    },
+    {
+      "case_id": "e09",
+      "split": "dev",
+      "expected": "answer",
+      "outcome": "answered",
+      "correct": true,
+      "execution_match": true,
+      "request_id": "bbc290ce-9ed6-4119-9ddf-10603e5868b6",
+      "attempts": 1,
+      "latency_ms": 6377.821249989211,
+      "input_tokens": 8,
+      "output_tokens": 567,
+      "grounding_passed": false,
+      "note": ""
+    },
+    {
+      "case_id": "e10",
+      "split": "holdout",
+      "expected": "answer",
+      "outcome": "answered",
+      "correct": true,
+      "execution_match": true,
+      "request_id": "230fd631-9d2e-4d4b-9a9a-3ae29d6abc7c",
+      "attempts": 1,
+      "latency_ms": 4490.407665987732,
+      "input_tokens": 414,
+      "output_tokens": 322,
+      "grounding_passed": true,
+      "note": ""
+    },
+    {
+      "case_id": "e11",
+      "split": "holdout",
+      "expected": "answer",
+      "outcome": "answered",
+      "correct": true,
+      "execution_match": true,
+      "request_id": "4681e83e-1afd-42c7-860f-5d1cb177da51",
+      "attempts": 1,
+      "latency_ms": 6943.362124991836,
+      "input_tokens": 456,
+      "output_tokens": 376,
+      "grounding_passed": false,
+      "note": ""
+    },
+    {
+      "case_id": "e12",
+      "split": "holdout",
+      "expected": "answer",
+      "outcome": "answered",
+      "correct": true,
+      "execution_match": true,
+      "request_id": "68f6ff21-c6a0-4900-86b9-5d6e4403ccce",
+      "attempts": 1,
+      "latency_ms": 6261.957624999923,
+      "input_tokens": 411,
+      "output_tokens": 430,
+      "grounding_passed": true,
+      "note": ""
+    },
+    {
+      "case_id": "m01",
+      "split": "dev",
+      "expected": "answer",
+      "outcome": "answered",
+      "correct": true,
+      "execution_match": true,
+      "request_id": "8abfa6ce-81f7-40f9-91c6-d2793322c418",
+      "attempts": 1,
+      "latency_ms": 6757.411665996187,
+      "input_tokens": 8,
+      "output_tokens": 580,
+      "grounding_passed": false,
+      "note": ""
+    },
+    {
+      "case_id": "m02",
+      "split": "dev",
+      "expected": "answer",
+      "outcome": "answered",
+      "correct": true,
+      "execution_match": true,
+      "request_id": "9cf0180a-57e1-49e7-adf3-31fc935f7fd6",
+      "attempts": 1,
+      "latency_ms": 5944.454832992051,
+      "input_tokens": 8,
+      "output_tokens": 486,
+      "grounding_passed": true,
+      "note": ""
+    },
+    {
+      "case_id": "m03",
+      "split": "dev",
+      "expected": "answer",
+      "outcome": "answered",
+      "correct": true,
+      "execution_match": true,
+      "request_id": "e9b72a35-0dd4-4dd1-b1a7-93c66a38aad9",
+      "attempts": 1,
+      "latency_ms": 9382.605959006469,
+      "input_tokens": 8,
+      "output_tokens": 954,
+      "grounding_passed": true,
+      "note": ""
+    },
+    {
+      "case_id": "m04",
+      "split": "dev",
+      "expected": "answer",
+      "outcome": "answered",
+      "correct": true,
+      "execution_match": true,
+      "request_id": "87968cb7-9914-4b6a-b199-cb33d3b12fc5",
+      "attempts": 1,
+      "latency_ms": 5166.634375011199,
+      "input_tokens": 8,
+      "output_tokens": 423,
+      "grounding_passed": true,
+      "note": ""
+    },
+    {
+      "case_id": "m05",
+      "split": "dev",
+      "expected": "answer",
+      "outcome": "answered",
+      "correct": true,
+      "execution_match": true,
+      "request_id": "3557b9c6-51ed-43e1-833b-e7a1f8580e00",
+      "attempts": 1,
+      "latency_ms": 6823.007583006984,
+      "input_tokens": 8,
+      "output_tokens": 587,
+      "grounding_passed": false,
+      "note": ""
+    },
+    {
+      "case_id": "m06",
+      "split": "dev",
+      "expected": "answer",
+      "outcome": "answered",
+      "correct": false,
+      "execution_match": false,
+      "request_id": "6b795a4e-1391-4a9d-b201-b494e9b61c39",
+      "attempts": 1,
+      "latency_ms": 6004.027792005218,
+      "input_tokens": 512,
+      "output_tokens": 455,
+      "grounding_passed": false,
+      "note": "gold rows=2, got rows=1"
+    },
+    {
+      "case_id": "m07",
+      "split": "dev",
+      "expected": "answer",
+      "outcome": "answered",
+      "correct": true,
+      "execution_match": true,
+      "request_id": "978347bf-dd48-48ce-970a-a983c259e438",
+      "attempts": 1,
+      "latency_ms": 7824.083500003326,
+      "input_tokens": 8,
+      "output_tokens": 707,
+      "grounding_passed": false,
+      "note": ""
+    },
+    {
+      "case_id": "m08",
+      "split": "dev",
+      "expected": "answer",
+      "outcome": "answered",
+      "correct": true,
+      "execution_match": true,
+      "request_id": "b5b07de7-953d-4873-8e9a-da8c134a9220",
+      "attempts": 1,
+      "latency_ms": 12000.650374990073,
+      "input_tokens": 8,
+      "output_tokens": 1261,
+      "grounding_passed": false,
+      "note": ""
+    },
+    {
+      "case_id": "m09",
+      "split": "holdout",
+      "expected": "answer",
+      "outcome": "answered",
+      "correct": true,
+      "execution_match": true,
+      "request_id": "4b513b80-ac56-44ec-b7b6-e2224fc9c7ac",
+      "attempts": 1,
+      "latency_ms": 5739.5848329906585,
+      "input_tokens": 8,
+      "output_tokens": 409,
+      "grounding_passed": true,
+      "note": ""
+    },
+    {
+      "case_id": "m10",
+      "split": "holdout",
+      "expected": "answer",
+      "outcome": "answered",
+      "correct": true,
+      "execution_match": true,
+      "request_id": "953fa8c4-85c9-4c37-88fc-15646528002d",
+      "attempts": 1,
+      "latency_ms": 5542.189250001684,
+      "input_tokens": 435,
+      "output_tokens": 273,
+      "grounding_passed": true,
+      "note": ""
+    },
+    {
+      "case_id": "m11",
+      "split": "holdout",
+      "expected": "answer",
+      "outcome": "answered",
+      "correct": true,
+      "execution_match": true,
+      "request_id": "27701cbc-05e9-4cff-bb8a-198d8b52a629",
+      "attempts": 1,
+      "latency_ms": 9582.535167006426,
+      "input_tokens": 8,
+      "output_tokens": 736,
+      "grounding_passed": true,
+      "note": ""
+    },
+    {
+      "case_id": "m12",
+      "split": "holdout",
+      "expected": "answer",
+      "outcome": "answered",
+      "correct": true,
+      "execution_match": true,
+      "request_id": "a05fb2e3-c2c9-4d26-981d-6775a53ad382",
+      "attempts": 1,
+      "latency_ms": 4709.672915996634,
+      "input_tokens": 450,
+      "output_tokens": 324,
+      "grounding_passed": false,
+      "note": ""
+    },
+    {
+      "case_id": "h01",
+      "split": "dev",
+      "expected": "answer",
+      "outcome": "answered",
+      "correct": true,
+      "execution_match": true,
+      "request_id": "6ac8aa94-b01f-4960-a1b6-68f8e4153df8",
+      "attempts": 1,
+      "latency_ms": 14493.953541998053,
+      "input_tokens": 8,
+      "output_tokens": 1775,
+      "grounding_passed": true,
+      "note": ""
+    },
+    {
+      "case_id": "h02",
+      "split": "dev",
+      "expected": "answer",
+      "outcome": "answered",
+      "correct": true,
+      "execution_match": true,
+      "request_id": "c2cd5e2d-83f2-454a-801a-e0a79c97d8fd",
+      "attempts": 1,
+      "latency_ms": 9228.189875007956,
+      "input_tokens": 8,
+      "output_tokens": 910,
+      "grounding_passed": false,
+      "note": ""
+    },
+    {
+      "case_id": "h03",
+      "split": "dev",
+      "expected": "answer",
+      "outcome": "answered",
+      "correct": true,
+      "execution_match": true,
+      "request_id": "803d3fa1-a00b-47ec-875d-58e9cfebb989",
+      "attempts": 1,
+      "latency_ms": 9477.402292002807,
+      "input_tokens": 8,
+      "output_tokens": 954,
+      "grounding_passed": true,
+      "note": ""
+    },
+    {
+      "case_id": "h04",
+      "split": "dev",
+      "expected": "answer",
+      "outcome": "answered",
+      "correct": true,
+      "execution_match": true,
+      "request_id": "5e40cdeb-c892-4a4c-9ffe-5b00e32c0e21",
+      "attempts": 1,
+      "latency_ms": 12055.15166700934,
+      "input_tokens": 8,
+      "output_tokens": 1391,
+      "grounding_passed": true,
+      "note": ""
+    },
+    {
+      "case_id": "h05",
+      "split": "dev",
+      "expected": "answer",
+      "outcome": "answered",
+      "correct": true,
+      "execution_match": true,
+      "request_id": "c419b965-0ed5-43d0-8fe5-d998f26f964f",
+      "attempts": 1,
+      "latency_ms": 10619.686666002963,
+      "input_tokens": 8,
+      "output_tokens": 560,
+      "grounding_passed": false,
+      "note": ""
+    },
+    {
+      "case_id": "h06",
+      "split": "holdout",
+      "expected": "answer",
+      "outcome": "answered",
+      "correct": true,
+      "execution_match": true,
+      "request_id": "a1c8233b-68b0-4f90-a283-b611316237f7",
+      "attempts": 1,
+      "latency_ms": 7921.090584000922,
+      "input_tokens": 8,
+      "output_tokens": 695,
+      "grounding_passed": true,
+      "note": ""
+    },
+    {
+      "case_id": "h07",
+      "split": "holdout",
+      "expected": "answer",
+      "outcome": "answered",
+      "correct": true,
+      "execution_match": true,
+      "request_id": "7c022ee7-f8d4-412d-9cc0-6936e34d66d2",
+      "attempts": 1,
+      "latency_ms": 13526.79750000243,
+      "input_tokens": 8,
+      "output_tokens": 1510,
+      "grounding_passed": false,
+      "note": ""
+    },
+    {
+      "case_id": "h08",
+      "split": "holdout",
+      "expected": "answer",
+      "outcome": "answered",
+      "correct": true,
+      "execution_match": true,
+      "request_id": "481bd49c-ea9f-4cb8-b42f-a26225275deb",
+      "attempts": 1,
+      "latency_ms": 11402.647750001051,
+      "input_tokens": 8,
+      "output_tokens": 1376,
+      "grounding_passed": false,
+      "note": ""
+    },
+    {
+      "case_id": "c01",
+      "split": "dev",
+      "expected": "clarify",
+      "outcome": "clarified",
+      "correct": true,
+      "execution_match": null,
+      "request_id": "f749622c-33bc-457f-ae9d-6f680df6e488",
+      "attempts": 1,
+      "latency_ms": 4795.089499995811,
+      "input_tokens": 4,
+      "output_tokens": 212,
+      "grounding_passed": null,
+      "note": ""
+    },
+    {
+      "case_id": "c02",
+      "split": "dev",
+      "expected": "clarify",
+      "outcome": "clarified",
+      "correct": true,
+      "execution_match": null,
+      "request_id": "dd729c74-8cb7-4fd8-be46-4c079cc3facd",
+      "attempts": 1,
+      "latency_ms": 3300.999375001993,
+      "input_tokens": 4,
+      "output_tokens": 179,
+      "grounding_passed": null,
+      "note": ""
+    },
+    {
+      "case_id": "c03",
+      "split": "dev",
+      "expected": "clarify",
+      "outcome": "clarified",
+      "correct": true,
+      "execution_match": null,
+      "request_id": "ae2b6994-7685-4835-bfac-43d49d6e58e2",
+      "attempts": 1,
+      "latency_ms": 3170.0431250064867,
+      "input_tokens": 4,
+      "output_tokens": 129,
+      "grounding_passed": null,
+      "note": ""
+    },
+    {
+      "case_id": "c04",
+      "split": "holdout",
+      "expected": "clarify",
+      "outcome": "answered",
+      "correct": false,
+      "execution_match": null,
+      "request_id": "69b64946-f89a-455a-a99c-0f6e0dcb6fdb",
+      "attempts": 1,
+      "latency_ms": 12643.692124998779,
+      "input_tokens": 8,
+      "output_tokens": 1216,
+      "grounding_passed": true,
+      "note": ""
+    },
+    {
+      "case_id": "c05",
+      "split": "holdout",
+      "expected": "clarify",
+      "outcome": "answered",
+      "correct": false,
+      "execution_match": null,
+      "request_id": "a7b4e835-0af7-488a-b5c5-b84e3a89cdf8",
+      "attempts": 1,
+      "latency_ms": 8612.08020801132,
+      "input_tokens": 8,
+      "output_tokens": 765,
+      "grounding_passed": true,
+      "note": ""
+    },
+    {
+      "case_id": "r01",
+      "split": "dev",
+      "expected": "refuse",
+      "outcome": "refused",
+      "correct": true,
+      "execution_match": null,
+      "request_id": "ffcd0cd1-96c1-4fcb-8b7b-58837718ed4b",
+      "attempts": 1,
+      "latency_ms": 1601.1778340034653,
+      "input_tokens": 4,
+      "output_tokens": 65,
+      "grounding_passed": null,
+      "note": ""
+    },
+    {
+      "case_id": "r02",
+      "split": "dev",
+      "expected": "refuse",
+      "outcome": "refused",
+      "correct": true,
+      "execution_match": null,
+      "request_id": "0b9bb876-a0d2-4681-815f-98f9eb7fc6f0",
+      "attempts": 1,
+      "latency_ms": 2094.4480420002947,
+      "input_tokens": 4,
+      "output_tokens": 73,
+      "grounding_passed": null,
+      "note": ""
+    },
+    {
+      "case_id": "r03",
+      "split": "dev",
+      "expected": "refuse",
+      "outcome": "refused",
+      "correct": true,
+      "execution_match": null,
+      "request_id": "02675208-e245-4551-9d83-319f30e8697b",
+      "attempts": 1,
+      "latency_ms": 2807.48325001332,
+      "input_tokens": 4,
+      "output_tokens": 97,
+      "grounding_passed": null,
+      "note": ""
+    },
+    {
+      "case_id": "r04",
+      "split": "dev",
+      "expected": "refuse",
+      "outcome": "refused",
+      "correct": true,
+      "execution_match": null,
+      "request_id": "d002d97f-092f-4330-8473-602c559c1d5d",
+      "attempts": 1,
+      "latency_ms": 2864.7749580122763,
+      "input_tokens": 4,
+      "output_tokens": 79,
+      "grounding_passed": null,
+      "note": ""
+    },
+    {
+      "case_id": "r05",
+      "split": "dev",
+      "expected": "refuse",
+      "outcome": "refused",
+      "correct": true,
+      "execution_match": null,
+      "request_id": "539d964d-1063-4d91-b68a-a655cbeccbf2",
+      "attempts": 1,
+      "latency_ms": 2361.846041996614,
+      "input_tokens": 4,
+      "output_tokens": 78,
+      "grounding_passed": null,
+      "note": ""
+    },
+    {
+      "case_id": "r06",
+      "split": "holdout",
+      "expected": "refuse",
+      "outcome": "refused",
+      "correct": true,
+      "execution_match": null,
+      "request_id": "35155e5f-d314-4e57-9b30-a2cb13ddb787",
+      "attempts": 1,
+      "latency_ms": 1796.5147089998936,
+      "input_tokens": 4,
+      "output_tokens": 85,
+      "grounding_passed": null,
+      "note": ""
+    },
+    {
+      "case_id": "r07",
+      "split": "holdout",
+      "expected": "refuse",
+      "outcome": "refused",
+      "correct": true,
+      "execution_match": null,
+      "request_id": "3cbd0ed6-7569-4aa9-b341-ce296997caff",
+      "attempts": 1,
+      "latency_ms": 6971.711374993902,
+      "input_tokens": 4,
+      "output_tokens": 104,
+      "grounding_passed": null,
+      "note": ""
+    },
+    {
+      "case_id": "r08",
+      "split": "holdout",
+      "expected": "refuse",
+      "outcome": "refused",
+      "correct": true,
+      "execution_match": null,
+      "request_id": "48b6c3c5-67d8-477c-b62f-8c9d7d5e8c4c",
+      "attempts": 1,
+      "latency_ms": 1909.8072089982452,
+      "input_tokens": 4,
+      "output_tokens": 87,
+      "grounding_passed": null,
+      "note": ""
+    }
+  ]
+}
