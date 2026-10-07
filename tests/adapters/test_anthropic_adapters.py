@@ -99,7 +99,12 @@ class TestGenerator:
         assert kw["model"] == "claude-opus-5-5"
         assert kw["output_format"] is GenerationOutput
         assert kw["output_config"] == {"effort": "medium"}
-        assert CONTEXT.text in kw["system"]  # schema context lives in the cacheable prefix
+        # The schema context lives in the system block, which carries the cache breakpoint;
+        # the per-question user message comes after it and is never part of the cache key.
+        (system,) = kw["system"]
+        assert CONTEXT.text in system["text"]
+        assert system["cache_control"] == {"type": "ephemeral"}
+        assert "cache_control" not in kw
         assert kw["messages"] == [{"role": "user", "content": "Question: What is AUM?"}]
         assert kw["betas"] == [FALLBACK_BETA] and kw["fallbacks"] == "default"
         assert "temperature" not in kw

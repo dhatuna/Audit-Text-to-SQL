@@ -54,10 +54,12 @@ class _ClaudeCaller:
         kwargs: dict[str, Any] = {
             "model": self._model,
             "max_tokens": 16_000,
-            "system": system,
+            # Breakpoint on the system prompt, which is identical across questions. Top-level
+            # automatic caching would key the entry on the last block, the question itself,
+            # and so write a new entry on every call without ever reading one.
+            "system": [{"type": "text", "text": system, "cache_control": {"type": "ephemeral"}}],
             "messages": [{"role": "user", "content": user}],
             "output_config": {"effort": self._effort},
-            "cache_control": {"type": "ephemeral"},
         }
         if self._use_fallbacks:
             kwargs["betas"] = [FALLBACK_BETA]
