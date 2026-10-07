@@ -1,0 +1,24 @@
+name: ci
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  checks:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v5
+        with:
+          enable-cache: true
+      - run: uv sync --frozen
+      - name: Lint
+        run: uv run ruff check src tests && uv run ruff format --check src tests
+      - name: Types
+        run: uv run mypy
+      - name: Architecture (import contracts)
+        run: uv run lint-imports
+      - name: Tests (unit, adapters, integration via Docker)
+        run: uv run pytest --cov --cov-report=term-missing

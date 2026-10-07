@@ -51,3 +51,12 @@ def test_dsns_use_separate_roles() -> None:
     assert "user=nl2sql_app" in s.app_dsn
     assert "user=portfolio_admin" in s.admin_dsn
     assert "reader-local-only" not in repr(s)  # secrets are masked
+
+
+def test_api_key_from_settings_reaches_the_client(monkeypatch: pytest.MonkeyPatch) -> None:
+    monkeypatch.delenv("ANTHROPIC_API_KEY", raising=False)
+    s = Settings(ANTHROPIC_API_KEY="sk-from-dotenv")  # type: ignore[call-arg]
+    gen = Container(s).ask(Variant.IMPROVED)._generator
+    assert isinstance(gen, ClaudeSqlGenerator)
+    assert gen._client.api_key == "sk-from-dotenv"
+    assert "sk-from-dotenv" not in repr(s)

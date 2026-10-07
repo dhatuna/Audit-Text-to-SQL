@@ -15,10 +15,9 @@ dependencies = [
     "numpy>=2.0",
     "typer>=0.12",
     "rich>=13.7",
+    "streamlit>=1.38",
+    "pandas>=2.2",
 ]
-
-[project.optional-dependencies]
-ui = ["streamlit>=1.38", "pandas>=2.2"]
 
 [project.scripts]
 asql = "auditable_sql.bootstrap.main:main"
@@ -67,7 +66,7 @@ mypy_path = "src"
 packages = ["auditable_sql"]
 
 [[tool.mypy.overrides]]
-module = ["sqlglot.*", "testcontainers.*", "streamlit.*", "pandas.*"]
+module = ["sqlglot.*", "testcontainers.*", "pandas.*"]
 ignore_missing_imports = true
 
 # Clean Architecture dependency rule, enforced in CI.

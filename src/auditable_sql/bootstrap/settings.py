@@ -4,7 +4,7 @@ from __future__ import annotations
 
 from pathlib import Path
 
-from pydantic import SecretStr
+from pydantic import Field, SecretStr
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 PROJECT_ROOT = Path(__file__).resolve().parents[3]
@@ -28,6 +28,9 @@ class Settings(BaseSettings):
     statement_timeout_ms: int = 5_000
     max_repair_attempts: int = 1
 
+    # Read from ANTHROPIC_API_KEY (environment or .env). When unset, the SDK falls back to
+    # its own credential chain.
+    anthropic_api_key: SecretStr | None = Field(default=None, validation_alias="ANTHROPIC_API_KEY")
     model: str = "claude-opus-5-5"
     effort: str = "medium"
     use_fallbacks: bool = True

@@ -52,8 +52,9 @@ class UuidIds:
 
 
 @cache
-def _client() -> anthropic.Anthropic:
-    return anthropic.Anthropic(max_retries=3)
+def _client(api_key: str | None) -> anthropic.Anthropic:
+    # None lets the SDK resolve credentials itself (environment, `ant auth login` profile).
+    return anthropic.Anthropic(api_key=api_key, max_retries=3)
 
 
 class Container:
@@ -76,15 +77,16 @@ class Container:
             context, repairs = RawDdlContext(self.layer), 0
         else:
             context, repairs = SemanticLayerContext(self.layer), s.max_repair_attempts
+        key = s.anthropic_api_key.get_secret_value() if s.anthropic_api_key else None
         return AskQuestion(
             context_provider=context,
             generator=ClaudeSqlGenerator(
-                _client(), model=s.model, effort=s.effort, use_fallbacks=s.use_fallbacks
+                _client(key), model=s.model, effort=s.effort, use_fallbacks=s.use_fallbacks
             ),
             validator=self.validator,
             executor=self.executor,
             composer=ClaudeAnswerComposer(
-                _client(), model=s.model, effort="low", use_fallbacks=s.use_fallbacks
+                _client(key), model=s.model, effort="low", use_fallbacks=s.use_fallbacks
             ),
             audit=self.audit,
             clock=UtcClock(),

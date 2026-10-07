@@ -132,19 +132,15 @@ source = { editable = "." }
 dependencies = [
     { name = "anthropic" },
     { name = "numpy" },
+    { name = "pandas" },
     { name = "psycopg", extra = ["binary"] },
     { name = "pydantic" },
     { name = "pydantic-settings" },
     { name = "pyyaml" },
     { name = "rich" },
     { name = "sqlglot" },
-    { name = "typer" },
-]
-
-[package.optional-dependencies]
-ui = [
-    { name = "pandas" },
     { name = "streamlit" },
+    { name = "typer" },
 ]
 
 [package.dev-dependencies]
@@ -163,17 +159,16 @@ dev = [
 requires-dist = [
     { name = "anthropic", specifier = ">=0.70" },
     { name = "numpy", specifier = ">=2.0" },
-    { name = "pandas", marker = "extra == 'ui'", specifier = ">=2.2" },
+    { name = "pandas", specifier = ">=2.2" },
     { name = "psycopg", extras = ["binary"], specifier = ">=3.2" },
     { name = "pydantic", specifier = ">=2.8" },
     { name = "pydantic-settings", specifier = ">=2.4" },
     { name = "pyyaml", specifier = ">=6.0" },
     { name = "rich", specifier = ">=13.7" },
     { name = "sqlglot", specifier = ">=26.0" },
-    { name = "streamlit", marker = "extra == 'ui'", specifier = ">=1.38" },
+    { name = "streamlit", specifier = ">=1.38" },
     { name = "typer", specifier = ">=0.12" },
 ]
-provides-extras = ["ui"]
 
 [package.metadata.requires-dev]
 dev = [
