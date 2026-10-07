@@ -12,7 +12,7 @@ import anthropic
 import psycopg
 
 from auditable_sql.application.ask_question import AskQuestion
-from auditable_sql.application.evaluate import EvalCase, RunEvaluation
+from auditable_sql.application.evaluate import CheckGold, EvalCase, RunEvaluation
 from auditable_sql.application.ports import SchemaContextProvider
 from auditable_sql.application.replay import ReplayAudit
 from auditable_sql.bootstrap.settings import Settings
@@ -113,6 +113,7 @@ class Container:
             replay=self.replay,
             audit=self.audit,
             evaluation=lambda name: self.evaluation(Variant(name)),
+            check_gold=lambda: CheckGold(validator=self.validator, executor=self.executor),
             variants=tuple(v.value for v in Variant),
             seed=self.seed,
             load_cases=self.load_cases,

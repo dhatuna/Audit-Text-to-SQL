@@ -10,7 +10,7 @@ from dataclasses import dataclass
 from pathlib import Path
 
 from auditable_sql.application.ask_question import AskQuestion
-from auditable_sql.application.evaluate import EvalCase, RunEvaluation
+from auditable_sql.application.evaluate import CheckGold, EvalCase, RunEvaluation
 from auditable_sql.application.ports import AuditRepository
 from auditable_sql.application.replay import ReplayAudit
 
@@ -21,6 +21,7 @@ class Services:
     replay: Callable[[], ReplayAudit]
     audit: AuditRepository
     evaluation: Callable[[str], RunEvaluation]
+    check_gold: Callable[[], CheckGold]
     variants: tuple[str, ...]
     seed: Callable[[int], dict[str, int]]
     load_cases: Callable[[Path], list[EvalCase]]

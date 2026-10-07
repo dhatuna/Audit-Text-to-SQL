@@ -14,7 +14,7 @@ from collections.abc import Callable, Sequence
 from dataclasses import dataclass, field
 
 from auditable_sql.application.ask_question import AskQuestion
-from auditable_sql.application.ports import QueryExecutor
+from auditable_sql.application.ports import QueryExecutor, SqlValidator
 from auditable_sql.domain.errors import QueryExecutionError
 from auditable_sql.domain.models import AuditRecord, Decision, Outcome
 from auditable_sql.domain.results import results_match
@@ -149,6 +149,53 @@ class RunEvaluation:
             if on_result:
                 on_result(result)
         return results
+
+
+@dataclass(frozen=True, slots=True)
+class GoldCheck:
+    case_id: str
+    ok: bool
+    detail: str
+    row_count: int = 0
+    preview: tuple[tuple[object, ...], ...] = ()
+
+
+class CheckGold:
+    """Every gold query must pass the same validator as model SQL and return a usable result.
+
+    Holding gold SQL to the production policy keeps the eval honest: a question whose
+    answer needs a hidden column is not an "answerable" question.
+    """
+
+    def __init__(self, *, validator: SqlValidator, executor: QueryExecutor) -> None:
+        self._validator = validator
+        self._executor = executor
+
+    def execute(self, cases: Sequence[EvalCase]) -> list[GoldCheck]:
+        out = []
+        for case in cases:
+            if case.gold_sql is None:
+                continue
+            validation = self._validator.validate(case.gold_sql)
+            if not validation.passed or validation.normalized_sql is None:
+                rules = ", ".join(v.rule_id for v in validation.violations)
+                out.append(GoldCheck(case.id, False, f"validator rejected: {rules}"))
+                continue
+            try:
+                result = self._executor.execute(validation.normalized_sql)
+            except QueryExecutionError as exc:
+                out.append(GoldCheck(case.id, False, f"execution failed: {exc}"))
+                continue
+            problem = (
+                "empty result" if result.row_count == 0
+                else "truncated result" if result.truncated
+                else "NULL in single-value result" if result.rows == ((None,),)
+                else ""
+            )  # fmt: skip
+            out.append(
+                GoldCheck(case.id, not problem, problem or "ok", result.row_count, result.rows[:3])
+            )
+        return out
 
 
 def summarize(results: Sequence[CaseResult], cases: Sequence[EvalCase]) -> Summary:

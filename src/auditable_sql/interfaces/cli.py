@@ -182,6 +182,23 @@ def build_app(services: Services, console: Console | None = None) -> typer.Typer
         if not report.matches:
             raise typer.Exit(2)
 
+    @eval_app.command("check-gold")
+    def eval_check_gold(
+        cases_path: Annotated[Path, typer.Option("--cases")] = Path("evals/cases.yaml"),
+    ) -> None:
+        """Validate and execute every gold query (no API calls)."""
+        checks = services.check_gold().execute(services.load_cases(cases_path))
+        for c in checks:
+            mark = "[green]✓[/green]" if c.ok else "[red]✗[/red]"
+            preview = "; ".join(", ".join(map(str, row)) for row in c.preview)
+            console.print(
+                f"{mark} {c.case_id:<5} rows={c.row_count:<4} {c.detail:<10} {preview[:90]}"
+            )
+        failed = [c for c in checks if not c.ok]
+        console.print(f"{len(checks) - len(failed)}/{len(checks)} gold queries OK")
+        if failed:
+            raise typer.Exit(1)
+
     @eval_app.command("run")
     def eval_run(
         cases_path: Annotated[Path, typer.Option("--cases")] = Path("evals/cases.yaml"),
