@@ -66,7 +66,7 @@ class TestHappyPath:
         assert record.question == "What is total AUM?"
         assert record.user_label == "analyst-1"
         assert record.context == CONTEXT
-        assert record.prompt_version == "test-prompt-v1"
+        assert record.prompt_version == "test-prompt-v1+test-answer-v1"
         assert record.final_sql == SQL
         assert record.result_fingerprint is not None
         assert record.answer is not None and record.answer.text == "The answer is 42."

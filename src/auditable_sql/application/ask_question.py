@@ -133,7 +133,7 @@ class AskQuestion:
             user_label=user_label,
             question=question,
             context=context,
-            prompt_version=self._generator.prompt_version,
+            prompt_version=f"{self._generator.prompt_version}+{self._composer.prompt_version}",
             attempts=tuple(attempts),
             outcome=outcome,
             final_sql=(

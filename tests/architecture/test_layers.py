@@ -22,5 +22,5 @@ def test_import_contracts_hold(capsys: pytest.CaptureFixture[str]) -> None:
     finally:
         os.chdir(cwd)
     out = capsys.readouterr().out
-    assert "Contracts: 2 kept, 0 broken." in out, out
+    assert "Contracts: 3 kept, 0 broken." in out, out
     assert exit_code == 0, out

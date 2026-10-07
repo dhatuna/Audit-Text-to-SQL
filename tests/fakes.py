@@ -70,6 +70,8 @@ class ScriptedExecutor:
 
 
 class EchoComposer:
+    prompt_version = "test-answer-v1"
+
     def __init__(self, text: str = "The answer is 42.", error: Exception | None = None) -> None:
         self._text = text
         self._error = error

@@ -50,6 +50,8 @@ class QueryExecutor(Protocol):
 
 
 class AnswerComposer(Protocol):
+    prompt_version: str
+
     def compose(
         self, question: str, sql: str, result: QueryResult, assumptions: Sequence[str]
     ) -> Answer:

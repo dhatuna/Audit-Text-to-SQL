@@ -57,8 +57,24 @@ class TestResultsMatch:
         assert not results_match(result(["v"], [1], [1], [2]), result(["v"], [1], [2], [2]))
 
     def test_shape_mismatch(self) -> None:
-        assert not results_match(result(["a"], [1]), result(["a", "b"], [1, 2]))
+        assert not results_match(result(["a", "b"], [1, 2]), result(["a"], [1]))
         assert not results_match(result(["a"], [1]), result(["a"], [1], [1]))
+
+    def test_extra_columns_are_tolerated_when_a_subset_matches(self) -> None:
+        gold = result(["name"], ["Alpha"], ["Beta"])
+        pred = result(["name", "change"], ["Beta", 5], ["Alpha", 9])
+        assert results_match(gold, pred)
+        assert not results_match(gold, pred, allow_extra_columns=False)
+
+    def test_extra_columns_do_not_hide_wrong_values(self) -> None:
+        gold = result(["name", "aum"], ["Alpha", 10], ["Beta", 20])
+        pred = result(["name", "aum", "n"], ["Alpha", 20, 1], ["Beta", 10, 2])
+        assert not results_match(gold, pred)
+
+    def test_extra_columns_with_ordering(self) -> None:
+        gold = result(["t"], ["A"], ["B"])
+        assert results_match(gold, result(["t", "v"], ["A", 2], ["B", 1]), ordered=True)
+        assert not results_match(gold, result(["t", "v"], ["B", 1], ["A", 2]), ordered=True)
 
     def test_truncated_never_matches(self) -> None:
         r = result(["a"], [1])
