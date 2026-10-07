@@ -1,0 +1,22 @@
+services:
+  db:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_DB: portfolio
+      POSTGRES_USER: ${ADMIN_USER:-portfolio_admin}
+      POSTGRES_PASSWORD: ${ADMIN_PASSWORD:-admin-local-only}
+      READER_PASSWORD: ${READER_PASSWORD:-reader-local-only}
+      APP_PASSWORD: ${APP_PASSWORD:-app-local-only}
+    ports:
+      - "${DB_PORT:-5433}:5432"
+    volumes:
+      - ./db/init:/docker-entrypoint-initdb.d:ro
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d portfolio"]
+      interval: 2s
+      timeout: 3s
+      retries: 30
+
+volumes:
+  pgdata:

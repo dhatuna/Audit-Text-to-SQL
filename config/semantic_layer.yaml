@@ -1,0 +1,131 @@
+# Single source of truth for (a) what the model is told about the data and
+# (b) which tables/columns generated SQL may read. Columns with `exposed: false`
+# are omitted from the model context AND rejected by the validator.
+# db/init/03_roles.sh must grant exactly the exposed columns (checked by tests).
+
+version: "2026-10-07.1"
+dialect: postgres
+
+data_coverage:
+  first_date: "2024-01-02"
+  last_date: "2025-12-31"
+  calendar: "US weekdays only (no holiday calendar). All amounts in USD."
+
+tables:
+  clients:
+    description: Advisory clients. Personal details are not available to this system.
+    columns:
+      client_id:    {type: integer, description: Primary key}
+      full_name:    {type: text, exposed: false}
+      email:        {type: text, exposed: false}
+      tax_id:       {type: text, exposed: false}
+      risk_profile: {type: text, description: "One of: conservative, moderate, aggressive"}
+      onboarded_on: {type: date}
+
+  portfolios:
+    description: A client's managed portfolio. One client can have several.
+    columns:
+      portfolio_id:   {type: integer, description: Primary key}
+      client_id:      {type: integer, description: FK -> clients}
+      name:           {type: text, description: "Unique display name, e.g. 'Cedar Growth 03'"}
+      strategy:       {type: text, description: "One of: growth, value, income, balanced, index"}
+      inception_date: {type: date}
+
+  accounts:
+    description: Custody accounts. Every account belongs to exactly one portfolio.
+    columns:
+      account_id:   {type: integer, description: Primary key}
+      portfolio_id: {type: integer, description: FK -> portfolios}
+      account_type: {type: text, description: "One of: taxable, ira, trust"}
+      custodian:    {type: text, description: "Custodian name, e.g. 'Harbor Trust'"}
+      opened_on:    {type: date}
+
+  securities:
+    description: Instrument master.
+    columns:
+      security_id: {type: integer, description: Primary key}
+      ticker:      {type: text, description: "Unique synthetic ticker, upper case"}
+      name:        {type: text}
+      asset_class: {type: text, description: "One of: equity, etf, fixed_income"}
+      sector:      {type: text, description: "GICS-style sector for equities; NULL for etf and fixed_income"}
+
+  daily_prices:
+    description: Closing price per security per trading day.
+    columns:
+      security_id: {type: integer, description: FK -> securities}
+      price_date:  {type: date}
+      close:       {type: "numeric(14,4)", description: Closing price in USD}
+
+  trades:
+    description: Executed trades. quantity is always positive; direction is in `side`.
+    columns:
+      trade_id:    {type: bigint, description: Primary key}
+      account_id:  {type: integer, description: FK -> accounts}
+      security_id: {type: integer, description: FK -> securities}
+      trade_date:  {type: date}
+      side:        {type: text, description: "'buy' or 'sell'"}
+      quantity:    {type: "numeric(18,4)", description: Shares/units, always > 0}
+      price:       {type: "numeric(14,4)", description: Execution price in USD}
+      fees:        {type: "numeric(10,2)", description: Commission in USD}
+
+  positions_eod:
+    description: >
+      End-of-day holdings per account and security. A row exists only while the
+      quantity is non-zero. Cash balances are NOT included.
+    columns:
+      account_id:   {type: integer, description: FK -> accounts}
+      security_id:  {type: integer, description: FK -> securities}
+      as_of_date:   {type: date}
+      quantity:     {type: "numeric(18,4)"}
+      market_value: {type: "numeric(18,2)", description: "quantity * close on as_of_date, USD"}
+      cost_basis:   {type: "numeric(18,2)", description: "Average-cost basis of the open quantity, USD"}
+
+  cash_flows:
+    description: Cash movements into or out of an account.
+    columns:
+      flow_id:    {type: bigint, description: Primary key}
+      account_id: {type: integer, description: FK -> accounts}
+      flow_date:  {type: date}
+      flow_type:  {type: text, description: "One of: deposit, withdrawal, dividend, fee"}
+      amount:     {type: "numeric(18,2)", description: "Signed USD; positive = into the account"}
+
+joins:
+  - "portfolios.client_id = clients.client_id"
+  - "accounts.portfolio_id = portfolios.portfolio_id"
+  - "trades.account_id = accounts.account_id"
+  - "trades.security_id = securities.security_id"
+  - "positions_eod.account_id = accounts.account_id"
+  - "positions_eod.security_id = securities.security_id"
+  - "daily_prices.security_id = securities.security_id"
+  - "cash_flows.account_id = accounts.account_id"
+
+definitions:
+  - term: "current / latest / today / now"
+    meaning: >
+      The latest date in the data: (SELECT MAX(as_of_date) FROM positions_eod) for holdings,
+      (SELECT MAX(price_date) FROM daily_prices) for prices. Never use CURRENT_DATE or NOW().
+  - term: "AUM / assets under management / portfolio value"
+    meaning: >
+      SUM(positions_eod.market_value) on a single as_of_date (default: latest), across the
+      relevant accounts. Excludes cash because cash balances are not recorded.
+  - term: "unrealized gain / unrealized P&L"
+    meaning: "SUM(market_value - cost_basis) on a single as_of_date."
+  - term: "weight / allocation"
+    meaning: "A holding's market_value divided by the total market_value of the same scope and date."
+  - term: "sector exposure"
+    meaning: "Market value grouped by securities.sector on one date; NULL sector shown as 'Unclassified'."
+  - term: "notional / trade value"
+    meaning: "quantity * price (excluding fees)."
+  - term: "net flows / net contributions"
+    meaning: "SUM(amount) of deposit and withdrawal flows (withdrawals are already negative)."
+  - term: "price return of a security over a period"
+    meaning: "close on the last trading day of the period / close on the first trading day - 1."
+  - term: "month / quarter / year"
+    meaning: "Calendar periods. 'Last month' means the last full calendar month in the data."
+
+not_supported:
+  - "Time-weighted or money-weighted portfolio returns (no cash ledger, so they cannot be computed correctly)."
+  - "Realized P&L (lot-level history is not stored)."
+  - "Benchmarks, ESG data, ratings, analyst targets, news, or anything outside these tables."
+  - "Client names, emails, tax IDs or any other personal details."
+  - "Forecasts, recommendations, or investment advice."

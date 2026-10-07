@@ -1,0 +1,72 @@
+from __future__ import annotations
+
+from decimal import Decimal
+
+import pytest
+
+from auditable_sql.domain.grounding import check_grounding
+from tests.fakes import result
+
+AUM = result(["portfolio", "aum", "return_pct"], ["Alpha", Decimal("1234567.891"), 0.0731])
+
+
+@pytest.mark.parametrize(
+    "answer",
+    [
+        "Alpha has AUM of $1,234,567.89.",
+        "Alpha has AUM of 1234567.891",
+        "Alpha manages about $1.2M.",
+        "Alpha manages about $1.23 million.",
+        "Alpha manages about 1,235 thousand dollars.",
+        "Alpha returned 7.3% over the period.",
+        "Alpha returned 7.31%.",
+        "Alpha returned 0.0731 (fractional).",
+        "There is 1 portfolio in the result.",  # row count
+        "Alpha has no figures worth quoting.",
+    ],
+)
+def test_grounded_answers_pass(answer: str) -> None:
+    report = check_grounding(answer, AUM)
+    assert report.passed, report.unmatched_numbers
+
+
+@pytest.mark.parametrize(
+    ("answer", "bad"),
+    [
+        ("Alpha has AUM of $1,300,000.", "$1,300,000"),
+        ("Alpha manages about $1.3M.", "$1.3M"),
+        ("Alpha returned 8.1%.", "8.1%"),
+        ("Alpha has 3 holdings.", "3"),
+    ],
+)
+def test_invented_numbers_are_flagged(answer: str, bad: str) -> None:
+    report = check_grounding(answer, AUM)
+    assert report.unmatched_numbers == (bad,)
+
+
+def test_numbers_from_the_question_are_not_claims() -> None:
+    report = check_grounding("Here are the top 5 portfolios.", AUM, question="top 5 portfolios")
+    assert report.passed and report.checked_numbers == ()
+
+
+def test_dates_and_years_are_ignored() -> None:
+    report = check_grounding("As of 2025-12-31, in 2025, Alpha led.", AUM)
+    assert report.checked_numbers == ()
+
+
+def test_negative_values_compare_by_magnitude() -> None:
+    res = result(["pnl"], [Decimal("-1520.40")])
+    assert check_grounding("Alpha lost $1,520.40.", res).passed
+
+
+def test_precision_is_respected() -> None:
+    # "1.2346" claims more precision than 1.2341 can round to.
+    res = result(["x"], [Decimal("1.2341")])
+    assert check_grounding("x is 1.234", res).passed
+    assert not check_grounding("x is 1.2346", res).passed
+
+
+def test_text_and_null_cells_are_ignored() -> None:
+    res = result(["name", "v"], ["12", None], [True, 7])
+    assert check_grounding("v is 7 across 2 rows.", res).passed
+    assert not check_grounding("v is 12", res).passed

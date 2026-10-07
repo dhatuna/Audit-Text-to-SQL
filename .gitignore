@@ -1,0 +1,27 @@
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+coverage.xml
+htmlcov/
+dist/
+build/
+
+# Local config / secrets
+.env
+.env.*
+!.env.example
+
+# Assistant tooling (kept out of the repo)
+.claude/
+CLAUDE.md
+CLAUDE.local.md
+
+# OS / editors
+.DS_Store
+.idea/
+.vscode/
