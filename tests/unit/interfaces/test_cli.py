@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import dataclasses
 import json
 from pathlib import Path
 
@@ -10,11 +11,11 @@ from rich.console import Console
 from typer.testing import CliRunner
 
 from auditable_sql.application.ask_question import AskQuestion
-from auditable_sql.application.evaluate import CheckGold, EvalCase, RunEvaluation
+from auditable_sql.application.evaluate import CheckGold, EvalCase, RunEvaluation, summarize
 from auditable_sql.application.replay import ReplayAudit
 from auditable_sql.domain.models import Decision, Generation, ValidationResult, Violation
 from auditable_sql.domain.policy import RuntimeLimits
-from auditable_sql.interfaces.cli import build_app
+from auditable_sql.interfaces.cli import build_app, summary_table
 from auditable_sql.interfaces.services import Services
 from tests.fakes import (
     EchoComposer,
@@ -195,3 +196,18 @@ def test_eval_check_gold() -> None:
     w = World(results=(result(["aum"], [42]),))
     code, out = w.invoke("eval", "check-gold")
     assert code == 0 and "1/1 gold queries OK" in out
+
+
+def test_cost_estimate_prices_each_token_kind() -> None:
+    s = dataclasses.replace(
+        summarize([], []),
+        input_tokens=1_000_000,  # $4.00
+        output_tokens=100_000,  # $2.00
+        cache_write_tokens=200_000,  # $1.00
+        cache_read_tokens=1_000_000,  # $0.20
+    )
+    console = Console(width=120, record=True)
+    console.print(summary_table("t", s))
+    out = console.export_text()
+    assert "$7.20" in out
+    assert "200,000 / 1,000,000" in out

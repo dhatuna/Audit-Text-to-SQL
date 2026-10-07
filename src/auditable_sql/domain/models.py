@@ -47,8 +47,10 @@ class Generation:
     assumptions: tuple[str, ...] = ()
     model: str = ""
     raw: dict[str, Any] = field(default_factory=dict)
-    input_tokens: int = 0
+    input_tokens: int = 0  # uncached input only; cached prefix tokens are counted below
     output_tokens: int = 0
+    cache_read_tokens: int = 0
+    cache_write_tokens: int = 0
 
 
 @dataclass(frozen=True, slots=True)
@@ -110,8 +112,10 @@ class GroundingReport:
 class Answer:
     text: str
     model: str = ""
-    input_tokens: int = 0
+    input_tokens: int = 0  # uncached input only; cached prefix tokens are counted below
     output_tokens: int = 0
+    cache_read_tokens: int = 0
+    cache_write_tokens: int = 0
 
 
 @dataclass(frozen=True, slots=True)

@@ -70,3 +70,39 @@ def test_text_and_null_cells_are_ignored() -> None:
     res = result(["name", "v"], ["12", None], [True, 7])
     assert check_grounding("v is 7 across 2 rows.", res).passed
     assert not check_grounding("v is 12", res).passed
+
+
+# The cases below come from false positives seen in the first real evaluation run.
+@pytest.mark.parametrize(
+    "answer",
+    [
+        "116 trades, dated from 1 to 30 November 2025.",
+        "Dividends paid between January 1 and December 31, 2025.",
+        "Q3 2025 is the quarter from July 1 through September 30, 2025.",
+        "Month-end totals:\n- January 31: 116\n- Feb. 28: 116",
+        "Counted from the 1st of May.",
+        "Trades dated 1\u201330 November.",
+    ],
+)
+def test_prose_dates_are_context(answer: str) -> None:
+    report = check_grounding(answer, result(["n"], [116]))
+    assert report.passed, report.unmatched_numbers
+
+
+def test_numbered_list_markers_are_not_figures() -> None:
+    res = result(["name", "aum"], ["Alpha", 10], ["Beta", 20])
+    answer = "Ranked:\n1. Alpha: 10\n2. Beta: 20\n  3) none"
+    assert check_grounding(answer, res).passed
+
+
+def test_digits_inside_text_labels_are_not_figures() -> None:
+    res = result(["portfolio", "inception"], ["Aspen Value 56", "2024-02-09"])
+    assert check_grounding("Aspen Value 56 started on 2024-02-09.", res).passed
+
+
+def test_context_stripping_does_not_hide_invented_figures() -> None:
+    res = result(["portfolio", "aum"], ["Aspen Value 56", 100])
+    report = check_grounding(
+        "1. Aspen Value 56 held 250 on December 31, up from 100 on 1 to 30 June.", res
+    )
+    assert report.unmatched_numbers == ("250",)

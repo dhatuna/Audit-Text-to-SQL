@@ -20,7 +20,8 @@ from auditable_sql.domain.models import AuditRecord, Outcome, QueryResult
 from auditable_sql.interfaces.services import Services
 
 # Claude Opus 5.5 list prices (USD per million tokens), used only for the cost estimate.
-PRICE_PER_MTOK = {"input": 4.00, "output": 20.00}
+# Cache writes (5-minute TTL) bill at 1.25x input; Opus 5.5 cache reads at 0.05x.
+PRICE_PER_MTOK = {"input": 4.00, "output": 20.00, "cache_write": 5.00, "cache_read": 0.20}
 
 OUTCOME_STYLE = {
     Outcome.ANSWERED: "green",
@@ -94,7 +95,10 @@ def summary_table(name: str, s: Summary) -> Table:
     t.add_column("metric")
     t.add_column("value", justify="right")
     cost = (
-        s.input_tokens * PRICE_PER_MTOK["input"] + s.output_tokens * PRICE_PER_MTOK["output"]
+        s.input_tokens * PRICE_PER_MTOK["input"]
+        + s.output_tokens * PRICE_PER_MTOK["output"]
+        + s.cache_write_tokens * PRICE_PER_MTOK["cache_write"]
+        + s.cache_read_tokens * PRICE_PER_MTOK["cache_read"]
     ) / 1e6
     for label, value in [
         ("cases (answerable / decline)", f"{s.total} ({s.answerable} / {s.unanswerable})"),
@@ -108,6 +112,7 @@ def summary_table(name: str, s: Summary) -> Table:
         ("grounding failures", str(s.grounding_failures)),
         ("latency p50 / p95", f"{s.latency_p50_ms / 1000:.1f}s / {s.latency_p95_ms / 1000:.1f}s"),
         ("tokens in / out", f"{s.input_tokens:,} / {s.output_tokens:,}"),
+        ("cache write / read", f"{s.cache_write_tokens:,} / {s.cache_read_tokens:,}"),
         ("est. cost (list price)", f"${cost:.2f}"),
     ]:
         t.add_row(label, value)

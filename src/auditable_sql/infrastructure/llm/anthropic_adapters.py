@@ -31,6 +31,16 @@ class GenerationOutput(BaseModel):
     assumptions: list[str] = Field(default_factory=list)
 
 
+def _usage(response: Any) -> dict[str, int]:
+    u = response.usage
+    return {
+        "input_tokens": u.input_tokens,
+        "output_tokens": u.output_tokens,
+        "cache_read_tokens": u.cache_read_input_tokens or 0,
+        "cache_write_tokens": u.cache_creation_input_tokens or 0,
+    }
+
+
 class _ClaudeCaller:
     def __init__(
         self, client: anthropic.Anthropic, *, model: str, effort: str, use_fallbacks: bool
@@ -104,8 +114,7 @@ class ClaudeSqlGenerator(_ClaudeCaller):
             assumptions=tuple(parsed.assumptions),
             model=response.model,
             raw=parsed.model_dump(),
-            input_tokens=response.usage.input_tokens,
-            output_tokens=response.usage.output_tokens,
+            **_usage(response),
         )
 
 
@@ -141,6 +150,5 @@ class ClaudeAnswerComposer(_ClaudeCaller):
         return Answer(
             text=text.strip(),
             model=response.model,
-            input_tokens=response.usage.input_tokens,
-            output_tokens=response.usage.output_tokens,
+            **_usage(response),
         )

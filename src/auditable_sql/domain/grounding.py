@@ -13,6 +13,17 @@ from decimal import Decimal, InvalidOperation
 from auditable_sql.domain.models import GroundingReport, QueryResult
 
 _DATE = re.compile(r"\b\d{4}-\d{2}-\d{2}\b")
+_MONTH = (
+    r"(?:Jan(?:uary)?|Feb(?:ruary)?|Mar(?:ch)?|Apr(?:il)?|May|June?|July?|Aug(?:ust)?"
+    r"|Sep(?:t(?:ember)?)?|Oct(?:ober)?|Nov(?:ember)?|Dec(?:ember)?)\.?"
+)
+_DAY = r"\d{1,2}(?:st|nd|rd|th)?\b"
+# "December 31", "1 to 30 November", "1st of May": calendar context, not figures.
+_PROSE_DATE = re.compile(
+    rf"\b{_MONTH}\s+{_DAY}|\b{_DAY}(?:\s*(?:to|through|and|-|\u2013)\s*{_DAY})?\s+(?:of\s+)?{_MONTH}"
+)
+_LIST_MARKER = re.compile(r"^\s*\d{1,3}[.)]\s", re.MULTILINE)
+_LETTER = re.compile(r"[A-Za-z]")
 _NUMBER = re.compile(
     r"""
     (?<![\w.])                    # not glued to a word or another number
@@ -41,9 +52,22 @@ def _numeric_cells(result: QueryResult) -> list[Decimal]:
     return values
 
 
+def _strip_context(text: str, result: QueryResult | None = None) -> str:
+    """Remove digits that are labels rather than figures: text values copied from the
+    result (a portfolio called "Aspen Value 56"), dates, and numbered-list markers."""
+    if result is not None:
+        # A purely numeric string cell is a figure, not a label: leave it to be checked.
+        labels = {c for row in result.rows for c in row if isinstance(c, str) and _LETTER.search(c)}
+        for label in sorted(labels, key=len, reverse=True):
+            text = text.replace(label, " ")
+    for pattern in (_DATE, _PROSE_DATE, _LIST_MARKER):
+        text = pattern.sub(" ", text)
+    return text
+
+
 def _parse(text: str) -> Iterable[tuple[str, Decimal, int, Decimal, bool]]:
     """Yield (token, value, decimals, multiplier, is_percent) for each number in text."""
-    for m in _NUMBER.finditer(_DATE.sub(" ", text)):
+    for m in _NUMBER.finditer(text):
         raw = m.group("num").replace(",", "")
         try:
             value = Decimal(raw)
@@ -69,11 +93,11 @@ def _matches(value: Decimal, decimals: int, multiplier: Decimal, pct: bool, cell
 
 
 def check_grounding(answer: str, result: QueryResult, question: str = "") -> GroundingReport:
-    question_numbers = {v for _, v, _, _, _ in _parse(question)}
+    question_numbers = {v for _, v, _, _, _ in _parse(_strip_context(question))}
     cells = _numeric_cells(result)
     checked: list[str] = []
     unmatched: list[str] = []
-    for token, value, decimals, multiplier, pct in _parse(answer):
+    for token, value, decimals, multiplier, pct in _parse(_strip_context(answer, result)):
         if value in question_numbers:
             continue  # echoing the question ("top 5") is not a claim about the data
         if decimals == 0 and multiplier == 1 and not pct and int(value) in _YEAR_RANGE:

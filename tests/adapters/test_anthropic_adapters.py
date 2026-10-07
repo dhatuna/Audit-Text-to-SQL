@@ -22,7 +22,13 @@ from auditable_sql.infrastructure.llm.anthropic_adapters import (
 )
 from tests.fakes import CONTEXT, result
 
-USAGE = SimpleNamespace(input_tokens=120, output_tokens=30)
+# The SDK reports cached prefix tokens separately from input_tokens; absent counts are None.
+USAGE = SimpleNamespace(
+    input_tokens=120,
+    output_tokens=30,
+    cache_read_input_tokens=900,
+    cache_creation_input_tokens=None,
+)
 
 
 def parsed_response(out: GenerationOutput | None, stop_reason: str = "end_turn") -> Any:
@@ -82,6 +88,7 @@ class TestGenerator:
         assert g.model == "claude-opus-5-5"
         assert g.raw["decision"] == "answer"
         assert (g.input_tokens, g.output_tokens) == (120, 30)
+        assert (g.cache_read_tokens, g.cache_write_tokens) == (900, 0)
 
     def test_request_shape(self) -> None:
         messages = FakeMessages(parsed_response(ANSWER))
@@ -170,6 +177,7 @@ class TestComposer:
         kind, kw = messages.calls[0]
         assert kind == "create" and "output_format" not in kw
         assert answer.text == "AUM is $1.2M."
+        assert (answer.input_tokens, answer.cache_read_tokens) == (120, 900)
         assert "- latest date" in kw["messages"][0]["content"]
         assert kw["output_config"] == {"effort": "low"}
 

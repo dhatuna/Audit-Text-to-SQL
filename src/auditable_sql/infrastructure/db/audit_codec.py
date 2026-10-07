@@ -85,6 +85,8 @@ def encode_attempt(a: Attempt) -> Json:
             "raw": g.raw,
             "input_tokens": g.input_tokens,
             "output_tokens": g.output_tokens,
+            "cache_read_tokens": g.cache_read_tokens,
+            "cache_write_tokens": g.cache_write_tokens,
         },
         "validation": None
         if a.validation is None
@@ -114,6 +116,9 @@ def decode_attempt(j: Json) -> Attempt:
             raw=g["raw"],
             input_tokens=g["input_tokens"],
             output_tokens=g["output_tokens"],
+            # Absent in records written before cache accounting was added.
+            cache_read_tokens=g.get("cache_read_tokens", 0),
+            cache_write_tokens=g.get("cache_write_tokens", 0),
         ),
         validation=None
         if v is None
@@ -134,6 +139,8 @@ def encode_answer(a: Answer | None) -> Json | None:
         "model": a.model,
         "input_tokens": a.input_tokens,
         "output_tokens": a.output_tokens,
+        "cache_read_tokens": a.cache_read_tokens,
+        "cache_write_tokens": a.cache_write_tokens,
     }
 
 

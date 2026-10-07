@@ -78,6 +78,19 @@ class TestScoring:
         assert res.outcome is Outcome.ANSWERED
         assert res.input_tokens == 100 and res.output_tokens == 10
 
+    def test_cache_tokens_are_counted_separately(self) -> None:
+        r = result(["n"], [7])
+        cached = Generation(
+            Decision.ANSWER, "r", sql="SELECT model", cache_read_tokens=900, cache_write_tokens=50
+        )
+        run, _ = runner([cached], [r, r])
+
+        (res,) = run.execute([case("a", Decision.ANSWER)], label="t")
+        s = summarize([res, res], [case("a", Decision.ANSWER)])
+
+        assert (res.cache_read_tokens, res.cache_write_tokens) == (900, 50)
+        assert (s.cache_read_tokens, s.cache_write_tokens) == (1800, 100)
+
     def test_wrong_result_is_incorrect_with_note(self) -> None:
         run, _ = runner([answer()], [result(["n"], [7]), result(["n"], [8], [9])])
 

@@ -16,7 +16,7 @@ from dataclasses import dataclass, field
 from auditable_sql.application.ask_question import AskQuestion
 from auditable_sql.application.ports import QueryExecutor, SqlValidator
 from auditable_sql.domain.errors import QueryExecutionError
-from auditable_sql.domain.models import AuditRecord, Decision, Outcome
+from auditable_sql.domain.models import Answer, AuditRecord, Decision, Generation, Outcome
 from auditable_sql.domain.results import results_match
 
 _DECLINED = {Outcome.CLARIFIED, Outcome.REFUSED}
@@ -56,6 +56,8 @@ class CaseResult:
     latency_ms: float
     input_tokens: int
     output_tokens: int
+    cache_read_tokens: int
+    cache_write_tokens: int
     grounding_passed: bool | None
     note: str = ""
 
@@ -77,16 +79,20 @@ class Summary:
     latency_p95_ms: float
     input_tokens: int
     output_tokens: int
+    cache_read_tokens: int
+    cache_write_tokens: int
     by_tag: dict[str, tuple[int, int]] = field(default_factory=dict)  # tag -> (correct, total)
 
 
-def _tokens(record: AuditRecord) -> tuple[int, int]:
-    inp = sum(a.generation.input_tokens for a in record.attempts)
-    out = sum(a.generation.output_tokens for a in record.attempts)
+def _tokens(record: AuditRecord) -> dict[str, int]:
+    """Token counts per kind, summed over every model call made for the request."""
+    calls: list[Generation | Answer] = [a.generation for a in record.attempts]
     if record.answer:
-        inp += record.answer.input_tokens
-        out += record.answer.output_tokens
-    return inp, out
+        calls.append(record.answer)
+    return {
+        kind: sum(getattr(c, kind) for c in calls)
+        for kind in ("input_tokens", "output_tokens", "cache_read_tokens", "cache_write_tokens")
+    }
 
 
 class RunEvaluation:
@@ -117,7 +123,6 @@ class RunEvaluation:
             if record.outcome in _DECLINED and not correct:
                 note = f"declined as {record.outcome}, expected {case.expected}"
 
-        inp, out = _tokens(record)
         return CaseResult(
             case_id=case.id,
             split=case.split,
@@ -128,8 +133,7 @@ class RunEvaluation:
             request_id=record.request_id,
             attempts=len(record.attempts),
             latency_ms=record.total_latency_ms,
-            input_tokens=inp,
-            output_tokens=out,
+            **_tokens(record),
             grounding_passed=record.grounding.passed if record.grounding else None,
             note=note or (record.error or ""),
         )
@@ -235,5 +239,7 @@ def summarize(results: Sequence[CaseResult], cases: Sequence[EvalCase]) -> Summa
         latency_p95_ms=latencies[min(len(latencies) - 1, round(0.95 * (len(latencies) - 1)))],
         input_tokens=sum(r.input_tokens for r in results),
         output_tokens=sum(r.output_tokens for r in results),
+        cache_read_tokens=sum(r.cache_read_tokens for r in results),
+        cache_write_tokens=sum(r.cache_write_tokens for r in results),
         by_tag=dict(sorted(by_tag.items())),
     )
